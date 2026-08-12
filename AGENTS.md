@@ -1,8 +1,34 @@
 # AGENTS.md
 
-- Preserve Windows-native and Ubuntu-native designs; do not introduce WSL as a requirement.
-- Keep the runtime localhost-only and the control connection outbound-only.
-- Never add arbitrary remote shell or unrelated host-data collection.
-- Verify signatures or hashes for runtime, model, and update artifacts.
-- Keep platform-specific behavior behind adapters and test on the target OS.
-- Do not claim compatibility without matrix evidence.
+## 开始前
+
+- 先读取 `../novagrid-project/AGENTS.md`、`docs/stages/CURRENT_STAGE.md`、当前任务卡和专题设计；
+- 一张已批准任务卡对应一个短分支和一个 Pull Request；
+- 开始修改前检查当前分支、`git status`、目标系统影响和已有测试。
+
+## 语言与提交
+
+- 项目自有代码中新建或修改的注释必须使用简体中文；
+- 生成代码、第三方代码、llama.cpp 上游代码和标准许可证文本除外；
+- 标识符、协议字段、错误码、日志键和 Metric 名称保持英文；
+- Commit 使用 `<type>(<scope>): <简体中文摘要>`，正文也使用简体中文；
+- 分支名称保持 ASCII，并包含任务编号。
+
+## 节点端约束
+
+- Windows 使用原生实现，Ubuntu 独立支持，禁止把 WSL 作为客户依赖；
+- 平台差异放入 Adapter，共享核心不散落平台判断；
+- Runtime 只监听 localhost，控制连接只由节点出站建立；
+- 禁止任意远程 Shell、无关进程扫描和个人目录读取；
+- Runtime、模型和更新制品必须验证签名或 SHA-256；
+- GPU、模型下载、升级、排水、崩溃和网络中断必须可恢复；
+- 单设备单 GPU 单请求和上线期间 GPU 独占不得被绕过；
+- 兼容性声明必须有对应 Windows/Ubuntu 和 GPU/驱动矩阵证据。
+
+## 完成门禁
+
+- 单元、目标系统、隐私、故障恢复和升级回滚测试按任务完成；
+- 不允许无任务编号的 TODO、FIXME、HACK、死代码和无用依赖；
+- 当前任务引入的测试失败以及 P0/P1 技术债不得进入 `main`；
+- 未在真实系统/GPU验证时必须明确写“未验证”；
+- 完成后填写项目主档中的任务交接和技术债记录。
