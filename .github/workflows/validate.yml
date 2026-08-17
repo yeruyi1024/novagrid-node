@@ -1,0 +1,42 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: 格式和静态检查
+        run: make lint
+
+      - name: 单元与协议兼容测试
+        run: make test
+
+      - name: 构建
+        run: make build
+
+      - name: 竞态检测
+        run: go test -race ./...
+
+      - name: 场景测试
+        run: make test-scenarios
+
+      - name: 补丁格式检查
+        run: git diff --check
